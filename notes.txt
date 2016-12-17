@@ -1,0 +1,35 @@
+Algorithm to create gradient fallback for an image.
+
+Args to pass in:
+(Set reasonable defaults for optional args)
+
+@imagePath: path to image (required)
+@gradientType: linear-gradient() horizontal / vertical / diagonal, radial-gradient() (optional)
+@bands: number of bands (optional)
+@vendorPrefix: include vendor prefixes for gradient (optional)
+@output?: CSS gradient | <canvas> | <svg> (optional)
+
+Gradient class?
+LinearGradient extends Gradient
+RadialGradient extends Gradient
+
+i.e Gradient gradient = new Gradient()
+gradient.toCSS();
+
+Would be cool to generate image/overlay showing:
+ - Each band region
+ - Each band region filled with average color (of that band)
+
+Resize large images to make generating gradient quicker?
+
+Todos
+
+- Code tidy up
+- CLI arguments
+- Band visualisations
+    - Show average color in each band
+    - Overlay image with lines showing each band
+- Web interface
+- Velocity macro
+
+beach.jpg with bandCount 400 looks amazing!
