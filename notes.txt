@@ -7,6 +7,7 @@ Args to pass in:
 @gradientType: linear-gradient() horizontal / vertical / diagonal, radial-gradient() (optional)
 @bands: number of bands (optional)
 @vendorPrefix: include vendor prefixes for gradient (optional)
+@cssComments: include comments in generated CSS gradient? (i.e /* fallback color */ /* For Chrome 25 and Safari 6, iOS 6.1, Android 4.3 */ etc).
 @output?: CSS gradient | <canvas> | <svg> (optional)
 
 Gradient class?
@@ -24,7 +25,6 @@ Resize large images to make generating gradient quicker?
 
 Todos
 
-- Code tidy up
 - CLI arguments
 - Band visualisations
     - Show average color in each band

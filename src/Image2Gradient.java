@@ -13,10 +13,16 @@ public class Image2Gradient {
     // Debugging --
     private final static Logger logger = Logger.getLogger(Image2Gradient.class.getName());
 
+    // Set finals --
+    private static final String T2B_GRADIENT   = "t2b"; // top to bottom (default)
+    private static final String L2R_GRADIENT   = "l2r"; // left to right
+    private static final String BL2TR_GRADIENT = "bl2tr"; // bottom left to top right
+    private static final String BR2TL_GRADIENT = "br2tl"; // bottom right to top left
+
     // Set defaults (will also be CLI config options) --
-    private static String gradientType = "l-r"; // l-r (left to right) | t-b (top to bottom) | bl-tr (bottom left to top right) | br-tl (bottom right to top left)
-    private static Integer bandCount   = 10;
-    private static double angle        = 45; // angle to rotate image (should angle be passed to linear-gradient)?
+    private static String gradientType         = T2B_GRADIENT;
+    private static Integer bandCount           = 10; // fidelity|precision
+    private static double angle                = 45; // angle to rotate image (should angle be passed to linear-gradient)?
 
     private static LinkedList<Color> averageColors = new LinkedList<>();
 
@@ -39,17 +45,17 @@ public class Image2Gradient {
         int bands[][];
 
         switch (gradientType) {
-            case "t-b":
+            case T2B_GRADIENT:
                 bands = horizontalBands(image, width, height);
                 break;
-            case "l-r":
+            case L2R_GRADIENT:
                 bands = verticalBands(image, width, height);
                 break;
-            case "bl-tr":
+            case BL2TR_GRADIENT:
                 BufferedImage rotatedImage = rotateImage(image, width, height);
                 bands = verticalBands(rotatedImage, rotatedImage.getWidth(), rotatedImage.getHeight());
                 break;
-            case "br-tl":
+            case BR2TL_GRADIENT:
                 rotatedImage = rotateImage(image, width, height);
                 bands = horizontalBands(rotatedImage, rotatedImage.getWidth(), rotatedImage.getHeight());
                 break;
@@ -62,7 +68,7 @@ public class Image2Gradient {
         }
 
         // reverse list as gradient starts from the bottom. todo: test this is correct / works.
-        if (gradientType.equals("br-tr")) {
+        if (gradientType.equals(BR2TL_GRADIENT)) {
             Collections.reverse(averageColors);
         }
 
@@ -153,7 +159,29 @@ public class Image2Gradient {
     }
 
     public static void main(String[] args) {
-        String imagePath = args[0];
-        Image2Gradient a = new Image2Gradient(imagePath);
+        // Todo: move config variables used here out into a service (can also be used by Image2Gradient and CSSGradient).
+
+//        -t: type of gradient (t2b / l2r / bl2tr / br2tl) {String} optional.
+//        -f: fidelity, number of bands {Integer} optional.
+//        -p: vendor prefixes for gradient ("web,moz,opera") {String} optional.
+//        --help: print usage / help.
+//        last arg: path to image {String} required.
+
+        // usage: Image2Gradient [-t] [-f] [-p] imagePath
+
+        String imagePath;
+
+        if (args.length > 1) {
+            System.out.println("there are args");
+            System.out.println("args length: "+ args.length);
+
+            for (String arg: args) {
+                System.out.println(arg);
+            }
+
+        } else {
+            imagePath = args[0];
+            Image2Gradient a = new Image2Gradient(imagePath);
+        }
     }
 }

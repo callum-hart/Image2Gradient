@@ -21,7 +21,7 @@ public class CSSGradient {
     private final String OPERA_PREFIX              = "opera";
 
     // Set defaults (will also be CLI config options) --
-    private String prefixes                        = "*";
+    private String prefixes                        = "*"; // vendors
         // "web": webkit
         // "web,moz": webkit and firefox
         // "web,moz,opera": webkit, firefox and opera
@@ -85,7 +85,7 @@ public class CSSGradient {
                      result += buildCSSDeclaration(OPERA_GRADIENT_FUNCTION);
                      break;
                 default:
-                     System.out.println("Unknown browser prefix: " + prefix);
+                     System.err.println("Unknown browser prefix: " + prefix);
             }
         }
 
