@@ -26,8 +26,12 @@ public class Image2Gradient {
 
     private static LinkedList<Color> averageColors = new LinkedList<>();
 
+    private Config config = new Config();
+
     private Image2Gradient(String imagePath) {
         File imageFile = new File(imagePath);
+
+        System.out.println("T2B from config: " + config.getT2bGradient());
 
         try {
             BufferedImage image = ImageIO.read(imageFile);
@@ -161,27 +165,31 @@ public class Image2Gradient {
     public static void main(String[] args) {
         // Todo: move config variables used here out into a service (can also be used by Image2Gradient and CSSGradient).
 
+        // Args with arguments:
+
 //        -t: type of gradient (t2b / l2r / bl2tr / br2tl) {String} optional.
 //        -f: fidelity, number of bands {Integer} optional.
 //        -p: vendor prefixes for gradient ("web,moz,opera") {String} optional.
 //        --help: print usage / help.
 //        last arg: path to image {String} required.
 
+        // Flags:
+//        -c: include CSS comments
+//        -bv: show band visualisations
+
         // usage: Image2Gradient [-t] [-f] [-p] imagePath
 
-        String imagePath;
+        Config config = new Config(args);
 
-        if (args.length > 1) {
-            System.out.println("there are args");
-            System.out.println("args length: "+ args.length);
+        String imagePath    = config.getImagePath();
+        String gradientType = config.getGradientType();
 
-            for (String arg: args) {
-                System.out.println(arg);
-            }
+        System.out.println("imagePath: " + imagePath);
+        System.out.println("gradientType: " + gradientType);
 
-        } else {
-            imagePath = args[0];
-            Image2Gradient a = new Image2Gradient(imagePath);
-        }
+        String wat = "".isEmpty() ? "default" : "ss";
+
+//        String imagePath = args[0];
+//        Image2Gradient a = new Image2Gradient(imagePath);
     }
 }
