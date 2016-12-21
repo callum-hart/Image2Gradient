@@ -19,7 +19,7 @@ public class Image2Gradient {
     private static final String BL2TR_GRADIENT = "bl2tr"; // bottom left to top right
     private static final String BR2TL_GRADIENT = "br2tl"; // bottom right to top left
 
-    // Set defaults (will also be CLI config options) --
+    // Set defaults (these will become CLI config options) --
     private static String gradientType         = T2B_GRADIENT;
     private static Integer bandCount           = 10; // fidelity|precision
     private static double angle                = 45; // angle to rotate image (should angle be passed to linear-gradient)?
@@ -169,7 +169,7 @@ public class Image2Gradient {
 
 //        -t: type of gradient (t2b / l2r / bl2tr / br2tl) {String} optional.
 //        -f: fidelity, number of bands {Integer} optional.
-//        -p: vendor prefixes for gradient ("web,moz,opera") {String} optional.
+//        -v: vendor prefixes for gradient ("web,moz,opera") {String} optional.
 //        --help: print usage / help.
 //        last arg: path to image {String} required.
 
@@ -183,11 +183,19 @@ public class Image2Gradient {
 
         String imagePath    = config.getImagePath();
         String gradientType = config.getGradientType();
+        Integer fidelity    = config.getFidelity();
+        String vendors    = config.getVendors();
 
+        System.out.println("---------config---------");
         System.out.println("imagePath: " + imagePath);
         System.out.println("gradientType: " + gradientType);
+        System.out.println("fidelity: " + fidelity);
+        System.out.println("vendors: " + vendors);
+        System.out.println("---------/config---------");
 
-        String wat = "".isEmpty() ? "default" : "ss";
+        if (imagePath.isEmpty()) {
+            System.out.println("Can't initialize Image2Gradient. Missing image path.");
+        }
 
 //        String imagePath = args[0];
 //        Image2Gradient a = new Image2Gradient(imagePath);
