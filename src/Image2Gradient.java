@@ -4,75 +4,70 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.logging.Logger;
 
 public class Image2Gradient {
 
-    // Debugging --
-    private final static Logger logger = Logger.getLogger(Image2Gradient.class.getName());
-
-    // Set finals --
-    private static final String T2B_GRADIENT   = "t2b"; // top to bottom (default)
-    private static final String L2R_GRADIENT   = "l2r"; // left to right
-    private static final String BL2TR_GRADIENT = "bl2tr"; // bottom left to top right
-    private static final String BR2TL_GRADIENT = "br2tl"; // bottom right to top left
-
-    // Set defaults (these will become CLI config options) --
-    private static String gradientType         = T2B_GRADIENT;
-    private static Integer bandCount           = 10; // fidelity|precision
-    private static double angle                = 45; // angle to rotate image (should angle be passed to linear-gradient)?
-
-    private static LinkedList<Color> averageColors = new LinkedList<>();
-
     private Config config = new Config();
 
-    private Image2Gradient(String imagePath) {
-        File imageFile = new File(imagePath);
+    // Set finals --
+    private final String T2B_GRADIENT   = config.getT2BGradient();
+    private final String L2R_GRADIENT   = config.getL2RGradient();
+    private final String BL2TR_GRADIENT = config.getBL2TRGradient();
+    private final String BR2TL_GRADIENT = config.getBR2TLGradient();
 
-        System.out.println("T2B from config: " + config.getT2bGradient());
+    // Globals / options --
+    private static String gradientType;
+    private static Integer fidelity;
 
-        try {
-            BufferedImage image = ImageIO.read(imageFile);
-            averageColors = bandize(image);
-            CSSGradient cssGradient = new CSSGradient(gradientType, averageColors, getAverageColor());
-            cssGradient.print();
-        } catch (Exception e) {
-            e.printStackTrace();
+    private static ArrayList<Color> averageColors = new ArrayList<>();
+
+    private ParamValidator paramValidator = new ParamValidator();
+
+    Image2Gradient(String imagePath, String rawGradient, Integer rawFidelity, String rawVendors) {
+
+        if (paramValidator.check(rawGradient, rawFidelity, rawVendors)) {
+            File imageFile = new File(imagePath);
+            gradientType   = rawGradient;
+            fidelity       = rawFidelity;
+
+            try {
+                BufferedImage image = ImageIO.read(imageFile);
+                averageColors = bandize(image);
+                CSSGradient cssGradient = new CSSGradient(gradientType, rawVendors, averageColors, getAverageColor());
+                cssGradient.print();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private LinkedList<Color> bandize(BufferedImage image) throws Exception {
+    private ArrayList<Color> bandize(BufferedImage image) throws Exception {
         int width = image.getWidth();
         int height = image.getHeight();
         int bands[][];
 
-        switch (gradientType) {
-            case T2B_GRADIENT:
-                bands = horizontalBands(image, width, height);
-                break;
-            case L2R_GRADIENT:
-                bands = verticalBands(image, width, height);
-                break;
-            case BL2TR_GRADIENT:
-                BufferedImage rotatedImage = rotateImage(image, width, height);
-                bands = verticalBands(rotatedImage, rotatedImage.getWidth(), rotatedImage.getHeight());
-                break;
-            case BR2TL_GRADIENT:
-                rotatedImage = rotateImage(image, width, height);
-                bands = horizontalBands(rotatedImage, rotatedImage.getWidth(), rotatedImage.getHeight());
-                break;
-            default:
-                bands = horizontalBands(image, width, height);
+        if (gradientType.equals(T2B_GRADIENT)) {
+            bands = horizontalBands(image, width, height);
+        } else if (gradientType.equals(L2R_GRADIENT)) {
+            bands = verticalBands(image, width, height);
+        } else if (gradientType.equals(BL2TR_GRADIENT)) {
+            BufferedImage rotatedImage = rotateImage(image, width, height);
+            bands = verticalBands(rotatedImage, rotatedImage.getWidth(), rotatedImage.getHeight());
+        } else if (gradientType.equals(BR2TL_GRADIENT)) {
+            BufferedImage rotatedImage = rotateImage(image, width, height);
+            bands = horizontalBands(rotatedImage, rotatedImage.getWidth(), rotatedImage.getHeight());
+        } else {
+            bands = horizontalBands(image, width, height);
         }
 
         for (int[] band: bands) {
             averageColors.add(getAverageColorInBand(band));
         }
 
-        // reverse list as gradient starts from the bottom. todo: test this is correct / works.
-        if (gradientType.equals(BR2TL_GRADIENT)) {
+        // reverse list as gradient starts from the bottom (which is end of the array). todo test this is correct / works.
+        if (gradientType.equals(config.getBR2TLGradient())) {
             Collections.reverse(averageColors);
         }
 
@@ -81,10 +76,10 @@ public class Image2Gradient {
 
     private int[][] horizontalBands(BufferedImage image, int width, int height) {
         int pixelCount = width * height;
-        int bands[][] = new int[bandCount][pixelCount / bandCount];
-        int bandHeight = height / bandCount;
+        int bands[][] = new int[fidelity][pixelCount / fidelity];
+        int bandHeight = height / fidelity;
 
-        for (int i = 0; i < bandCount; i++) {
+        for (int i = 0; i < fidelity; i++) {
             image.getRGB(0, bandHeight * i, width, bandHeight, bands[i], 0, width);
         }
 
@@ -93,10 +88,10 @@ public class Image2Gradient {
 
     private int[][] verticalBands(BufferedImage image, int width, int height) {
         int pixelCount = width * height;
-        int bands[][] = new int[bandCount][pixelCount / bandCount];
-        int bandWidth = width / bandCount;
+        int bands[][] = new int[fidelity][pixelCount / fidelity];
+        int bandWidth = width / fidelity;
 
-        for (int i = 0; i < bandCount; i++) {
+        for (int i = 0; i < fidelity; i++) {
             image.getRGB(bandWidth * i, 0, bandWidth, height, bands[i], 0, bandWidth);
         }
 
@@ -105,6 +100,7 @@ public class Image2Gradient {
 
     private BufferedImage rotateImage(BufferedImage image, int width, int height) throws Exception {
         try {
+            double angle = config.getDefaultRotation();
             AffineTransform transform = new AffineTransform();
             transform.rotate(Math.toRadians(angle), width / 2, height / 2);
 
@@ -163,8 +159,6 @@ public class Image2Gradient {
     }
 
     public static void main(String[] args) {
-        // Todo: move config variables used here out into a service (can also be used by Image2Gradient and CSSGradient).
-
         // Args with arguments:
 
 //        -t: type of gradient (t2b / l2r / bl2tr / br2tl) {String} optional.
@@ -173,7 +167,7 @@ public class Image2Gradient {
 //        --help: print usage / help.
 //        last arg: path to image {String} required.
 
-        // Flags:
+        // Flags (todo):
 //        -c: include CSS comments
 //        -bv: show band visualisations
 
@@ -184,20 +178,12 @@ public class Image2Gradient {
         String imagePath    = config.getImagePath();
         String gradientType = config.getGradientType();
         Integer fidelity    = config.getFidelity();
-        String vendors    = config.getVendors();
-
-        System.out.println("---------config---------");
-        System.out.println("imagePath: " + imagePath);
-        System.out.println("gradientType: " + gradientType);
-        System.out.println("fidelity: " + fidelity);
-        System.out.println("vendors: " + vendors);
-        System.out.println("---------/config---------");
+        String vendors      = config.getVendors();
 
         if (imagePath.isEmpty()) {
             System.out.println("Can't initialize Image2Gradient. Missing image path.");
+        } else {
+            Image2Gradient a = new Image2Gradient(imagePath, gradientType, fidelity, vendors);
         }
-
-//        String imagePath = args[0];
-//        Image2Gradient a = new Image2Gradient(imagePath);
     }
 }

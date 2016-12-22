@@ -6,6 +6,8 @@ public class CSSGradient {
     // Debugging --
     private final static Logger logger = Logger.getLogger(Image2Gradient.class.getName());
 
+    private Config config = new Config();
+
     // Set finals --
     private final String PROPERTY                  = "background-image";
     private final String FALLBACK_PROPERTY         = "background-color";
@@ -16,45 +18,39 @@ public class CSSGradient {
     private final String MOZ_GRADIENT_FUNCTION     = "-moz-linear-gradient";
     private final String OPERA_GRADIENT_FUNCTION   = "-o-linear-gradient";
     private final String GRADIENT_FUNCTION         = "linear-gradient";
-    private final String WEBKIT_PREFIX             = "web";
-    private final String MOZ_PREFIX                = "moz";
-    private final String OPERA_PREFIX              = "opera";
 
-    // Set defaults (will also be CLI config options) --
-    private String prefixes                        = "*"; // vendors
-        // "web": webkit
-        // "web,moz": webkit and firefox
-        // "web,moz,opera": webkit, firefox and opera
-        // "*": shorthand for all prefixes
+    private final String L2R_GRADIENT              = config.getL2RGradient();
+    private final String BL2TR_GRADIENT            = config.getBL2TRGradient();
+    private final String BR2TL_GRADIENT            = config.getBR2TLGradient();
+    private final String WEBKIT_PREFIX             = config.getWebkitPrefix();
+    private final String MOZ_PREFIX                = config.getMozPrefix();
+    private final String OPERA_PREFIX              = config.getOperaPrefix();
+
+    private String vendors                         = config.getDefaultVendors();
 
     private String gradientPrefix                  = "";
     private String gradientFallback                = "";
     private String colorStopList                   = ""; // <color-stop-list> argument of linear-gradient.
     private String cssGradient                     = "";
 
-    public CSSGradient(String gradientType, LinkedList<Color> averageColors, Color averageColor) {
-        if (prefixes.equals("*")) {
-            prefixes = String.format("%s,%s,%s", WEBKIT_PREFIX, MOZ_PREFIX, OPERA_PREFIX);
-        }
+    CSSGradient(String gradientType, String browsers, ArrayList<Color> averageColors, Color averageColor) {
+        vendors = browsers;
 
-        switch (gradientType) {
-            case "l-r":
-                gradientPrefix = String.format("%s, ", L2R_PREFIX);
-                break;
-            case "bl-tr":
-                gradientPrefix = String.format("%s, ", BL2TR_PREFIX);
-                break;
-            case "br-tl":
-                gradientPrefix = String.format("%s, ", BR2TL_PREFIX);
-                break;
-            default: gradientPrefix = "";
+        if (gradientType.equals(L2R_GRADIENT)) {
+            gradientPrefix = String.format("%s, ", L2R_PREFIX);
+        } else if (gradientType.equals(BL2TR_GRADIENT)) {
+            gradientPrefix = String.format("%s, ", BL2TR_PREFIX);
+        } else if (gradientType.equals(BR2TL_GRADIENT)) {
+            gradientPrefix = String.format("%s, ", BR2TL_PREFIX);
+        } else {
+            gradientPrefix = "";
         }
 
         gradientFallback = colorToCSSString(averageColor);
         gradientize(averageColors);
     }
 
-    private void gradientize(LinkedList<Color> averageColors) {
+    private void gradientize(ArrayList<Color> averageColors) {
         for (Color averageColor: averageColors) {
             colorStopList += colorToCSSString(averageColor);
         }
@@ -73,19 +69,15 @@ public class CSSGradient {
     private String addPrefixes() {
         String result = "";
 
-        for(String prefix: prefixes.split(",")) {
-            switch (prefix) {
-                case WEBKIT_PREFIX:
-                     result += buildCSSDeclaration(WEBKIT_GRADIENT_FUNCTION);
-                     break;
-                case MOZ_PREFIX:
-                     result += buildCSSDeclaration(MOZ_GRADIENT_FUNCTION);
-                     break;
-                case OPERA_PREFIX:
-                     result += buildCSSDeclaration(OPERA_GRADIENT_FUNCTION);
-                     break;
-                default:
-                     System.err.println("Unknown browser prefix: " + prefix);
+        for(String prefix: vendors.split(",")) {
+            if (prefix.equals(WEBKIT_PREFIX)) {
+                result += buildCSSDeclaration(WEBKIT_GRADIENT_FUNCTION);
+            } else if (prefix.equals(MOZ_PREFIX)) {
+                result += buildCSSDeclaration(MOZ_GRADIENT_FUNCTION);
+            } else if (prefix.equals(OPERA_PREFIX)) {
+                result += buildCSSDeclaration(OPERA_GRADIENT_FUNCTION);
+            } else {
+                System.err.println("Unknown browser prefix: " + prefix);
             }
         }
 

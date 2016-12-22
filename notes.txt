@@ -23,13 +23,17 @@ Would be cool to generate image/overlay showing:
 
 Resize large images to make generating gradient quicker?
 
-Todos
+Todos:
 
 - CLI arguments
+    -- help
+- `webkit-linear-gradient` not working for gradientType `l2r`
+    - Gradient prefix is different -webkit-linear-gradient(left, red, blue); "left" instead of "to right".
+    - Should check other vendor prefixs for different gradientTypes...
 - Band visualisations
     - Show average color in each band
     - Overlay image with lines showing each band
 - Web interface
 - Velocity macro
 
-beach.jpg with bandCount 400 looks amazing!
+beach.jpg with fidelity 400 looks amazing!
