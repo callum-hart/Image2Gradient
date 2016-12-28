@@ -1,11 +1,12 @@
 public class ParamValidator {
 
     // Set finals --
-    private final String PASS_SYMBOL   = "\u2713";     // ✓
-    private final String PASS_COLOR    = "\u001B[32m"; // green
-    private final String FAIL_SYMBOl   = "\u2717";     // ✗
-    private final String FAIL_COLOR    = "\u001B[31m"; // red
-    private final String DEFAULT_COLOR = "\u001B[0m";  // default
+    private static final String PASS_SYMBOL   = "\u2713";     // ✓
+    private static final String PASS_COLOR    = "\u001B[32m"; // green
+    private static final String FAIL_SYMBOl   = "\u2717";     // ✗
+    private static final String FAIL_COLOR    = "\u001B[31m"; // red
+    private static final String DEFAULT_COLOR = "\u001B[0m";  // default
+    private static final Integer MIN_FIDELITY = 2;  // minimum number of color stops
 
     private Config config = new Config();
 
@@ -29,8 +30,8 @@ public class ParamValidator {
     private boolean checkGadientType(String rawGradient) {
         boolean isValid = false;
 
-        if (rawGradient.equals(config.getT2BGradient()) || rawGradient.equals(config.getL2RGradient()) ||
-            rawGradient.equals(config.getBL2TRGradient()) || rawGradient.equals(config.getBR2TLGradient())) {
+        if (rawGradient.equals(config.getT2B()) || rawGradient.equals(config.getL2R()) ||
+            rawGradient.equals(config.getBL2TR()) || rawGradient.equals(config.getBR2TL())) {
             isValid = true;
 
             pass("gradientType is valid");
@@ -44,11 +45,11 @@ public class ParamValidator {
     private boolean checkFidelity(Integer rawFidelity) {
         boolean isValid = false;
 
-        if (rawFidelity > 0) {
+        if (rawFidelity >= MIN_FIDELITY) {
             isValid = true;
             pass("Fidelity is valid");
         } else {
-            fail("Fidelity has to be a positive number: " + rawFidelity);
+            fail("Fidelity has to be 2 or above: " + rawFidelity);
         }
 
         return isValid;
@@ -59,8 +60,8 @@ public class ParamValidator {
         String[] vendors = rawVendors.split(",");
 
         for (String vendor: vendors) {
-            if (vendor.equals(config.getWebkitPrefix()) || vendor.equals(config.getMozPrefix()) ||
-                vendor.equals(config.getOperaPrefix())) {
+            if (vendor.equals(config.getWebkitIdentifier()) || vendor.equals(config.getMozIdentifier()) ||
+                vendor.equals(config.getOperaIdentifier())) {
                 isValid = true;
             } else {
                 fail("Unrecognized vendor: " + vendor);

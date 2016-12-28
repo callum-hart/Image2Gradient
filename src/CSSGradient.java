@@ -1,91 +1,95 @@
+import javax.swing.text.html.CSS;
 import java.awt.*;
 import java.util.*;
-import java.util.logging.Logger;
+import java.util.List;
 
 public class CSSGradient {
-    // Debugging --
-    private final static Logger logger = Logger.getLogger(Image2Gradient.class.getName());
-
     private Config config = new Config();
 
     // Set finals --
-    private final String PROPERTY                  = "background-image";
-    private final String FALLBACK_PROPERTY         = "background-color";
-    private final String L2R_PREFIX                = "to right";
-    private final String BL2TR_PREFIX              = "to top right";
-    private final String BR2TL_PREFIX              = "to top left";
-    private final String WEBKIT_GRADIENT_FUNCTION  = "-webkit-linear-gradient";
-    private final String MOZ_GRADIENT_FUNCTION     = "-moz-linear-gradient";
-    private final String OPERA_GRADIENT_FUNCTION   = "-o-linear-gradient";
-    private final String GRADIENT_FUNCTION         = "linear-gradient";
+    private final String T2B                              = config.getT2B();
+    private final String L2R                              = config.getL2R();
+    private final String BL2TR                            = config.getBL2TR();
+    private final String BR2TL                            = config.getBR2TL();
 
-    private final String L2R_GRADIENT              = config.getL2RGradient();
-    private final String BL2TR_GRADIENT            = config.getBL2TRGradient();
-    private final String BR2TL_GRADIENT            = config.getBR2TLGradient();
-    private final String WEBKIT_PREFIX             = config.getWebkitPrefix();
-    private final String MOZ_PREFIX                = config.getMozPrefix();
-    private final String OPERA_PREFIX              = config.getOperaPrefix();
+    private final static String PROPERTY                  = "background-image";
+    private final static String FALLBACK_PROPERTY         = "background-color";
 
-    private String vendors                         = config.getDefaultVendors();
+    private final Map<String, Map> GRADIENT_MODELS        = new HashMap<String, Map>(){{
+        put("standard", new HashMap<String, String>(){{
+            put("function", "linear-gradient");
+            put("support",  "Standard syntax");
+            put(L2R,        "to right");
+            put(BL2TR,      "to top right");
+            put(BR2TL,      "to top left");
+        }});
 
-    private String gradientPrefix                  = "";
-    private String gradientFallback                = "";
-    private String colorStopList                   = ""; // <color-stop-list> argument of linear-gradient.
-    private String cssGradient                     = "";
+        put(config.getWebkitIdentifier(), new HashMap<String, String>(){{
+            put("function", "-webkit-linear-gradient");
+            put("support",  "Safari 5.1 to 6");
+            put(L2R,        "right|left"); // left when more than 2 color stops
+            put(BL2TR,      "bottom left");
+            put(BR2TL,      "bottom right");
+        }});
 
-    CSSGradient(String gradientType, String browsers, ArrayList<Color> averageColors, Color averageColor) {
-        vendors = browsers;
+        put(config.getMozIdentifier(), new HashMap<String, String>(){{
+            put("function", "-moz-linear-gradient");
+            put("support",  "Firefox 3.6 to 15");
+            put(L2R,        "right|left"); // left when more than 2 color stops
+            put(BL2TR,      "bottom left");
+            put(BR2TL,      "bottom right");
+        }});
 
-        if (gradientType.equals(L2R_GRADIENT)) {
-            gradientPrefix = String.format("%s, ", L2R_PREFIX);
-        } else if (gradientType.equals(BL2TR_GRADIENT)) {
-            gradientPrefix = String.format("%s, ", BL2TR_PREFIX);
-        } else if (gradientType.equals(BR2TL_GRADIENT)) {
-            gradientPrefix = String.format("%s, ", BR2TL_PREFIX);
-        } else {
-            gradientPrefix = "";
-        }
+        put(config.getOperaIdentifier(), new HashMap<String, String>(){{
+            put("function", "-o-linear-gradient");
+            put("support",  "Opera 11.1 to 12");
+            put(L2R,        "right|left"); // left when more than 2 color stops
+            put(BL2TR,      "bottom left");
+            put(BR2TL,      "bottom right");
+        }});
+    }};
 
-        gradientFallback = colorToCSSString(averageColor);
-        gradientize(averageColors);
-    }
+    private String cssGradient                             = "";
 
-    private void gradientize(ArrayList<Color> averageColors) {
+    CSSGradient(String gradientType, String vendors, ArrayList<Color> averageColors, Color dominantColor) {
+        String fallback = addFallback(colorToCSSString(dominantColor));
+        String function = GRADIENT_MODELS.get("standard").get("function").toString();
+        String direction = gradientType.equals(T2B) ? "" : GRADIENT_MODELS.get("standard").get(gradientType).toString();
+        String colorStops = "";
+
         for (Color averageColor: averageColors) {
-            colorStopList += colorToCSSString(averageColor);
+            colorStops += colorToCSSString(averageColor);
         }
 
-        colorStopList = colorStopList.replace(")r", "),r"); // add comma separators.
-        cssGradient += addFallback();
-        cssGradient += addPrefixes();
-        cssGradient += buildCSSDeclaration(GRADIENT_FUNCTION);
-    }
+        cssGradient += fallback;
+        cssGradient += buildCSSDeclaration(function, direction, colorStops);
 
-    private String addFallback() {
-        return String.format("%s: %s;", FALLBACK_PROPERTY, gradientFallback);
-    }
+        // handle vendor prefixes
+        for (String vendor: vendors.split(",")) {
+            function = GRADIENT_MODELS.get(vendor).get("function").toString();
 
-    // Todo: might not need moz, opera prefixes anymore... https://gist.github.com/alisonailea/c6cba44d6adf872d922b
-    private String addPrefixes() {
-        String result = "";
-
-        for(String prefix: vendors.split(",")) {
-            if (prefix.equals(WEBKIT_PREFIX)) {
-                result += buildCSSDeclaration(WEBKIT_GRADIENT_FUNCTION);
-            } else if (prefix.equals(MOZ_PREFIX)) {
-                result += buildCSSDeclaration(MOZ_GRADIENT_FUNCTION);
-            } else if (prefix.equals(OPERA_PREFIX)) {
-                result += buildCSSDeclaration(OPERA_GRADIENT_FUNCTION);
-            } else {
-                System.err.println("Unknown browser prefix: " + prefix);
+            if (!gradientType.equals(T2B)) {
+                direction = GRADIENT_MODELS.get(vendor).get(gradientType).toString();
             }
-        }
 
-        return result;
+            // When there are more than 2 color stops direction changes in Opera 11.1 - 12.0 and Fx 3.6 - 15 ಠ_ಠ
+            if (gradientType.equals(L2R)) {
+                String [] directions = direction.split("\\|");
+                direction = (averageColors.size() > 2) ? directions[1] : directions[0];
+            }
+
+            cssGradient += buildCSSDeclaration(function, direction, colorStops);
+        }
     }
 
-    private String buildCSSDeclaration(String gradientFunction) {
-        return String.format("%s: %s(%s%s);", PROPERTY, gradientFunction, gradientPrefix, colorStopList);
+    private String addFallback(String fallbackColor) {
+        return String.format("%s: %s;", FALLBACK_PROPERTY, fallbackColor);
+    }
+
+    private String buildCSSDeclaration(String function, String direction, String colorStops) {
+        direction = direction.isEmpty() ? direction : direction.concat(", ");
+        colorStops = colorStops.replace(")r", "),r");
+        return String.format("%s: %s(%s%s);", PROPERTY, function, direction, colorStops);
     }
 
     private String colorToCSSString(Color averageColor) {

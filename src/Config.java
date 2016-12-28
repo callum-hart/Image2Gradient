@@ -4,17 +4,18 @@ import java.util.List;
 public class Config {
 
     // Set finals --
-    private static final String T2B_GRADIENT      = "t2b";   // top to bottom (default)
-    private static final String L2R_GRADIENT      = "l2r";   // left to right
-    private static final String BL2TR_GRADIENT    = "bl2tr"; // bottom left to top right
-    private static final String BR2TL_GRADIENT    = "br2tl"; // bottom right to top left
-    private static final String WEBKIT_PREFIX     = "web";
-    private static final String MOZ_PREFIX        = "moz";
-    private static final String OPERA_PREFIX      = "opera";
+    private static final String T2B      = "t2b";   // top to bottom (default)
+    private static final String L2R      = "l2r";   // left to right
+    private static final String BL2TR    = "bl2tr"; // bottom left to top right
+    private static final String BR2TL    = "br2tl"; // bottom right to top left
+
+    private static final String WEBKIT_IDENTIFIER     = "web";
+    private static final String MOZ_IDENTIFIER        = "moz";
+    private static final String OPERA_IDENTIFIER      = "opera";
 
     // Set defaults --
     private static final Integer DEFAULT_FIDELITY = 10;
-    private static final String DEFAULT_VENDORS   = String.format("%s,%s,%s", WEBKIT_PREFIX, MOZ_PREFIX, OPERA_PREFIX);
+    private static final String DEFAULT_VENDORS   = String.format("%s,%s,%s", WEBKIT_IDENTIFIER, MOZ_IDENTIFIER, OPERA_IDENTIFIER);
     private static final Integer DEFAULT_ROTATION = 45; // todo make this configurable?
 
     // CLI flags --
@@ -37,32 +38,32 @@ public class Config {
 
     // Getters --
 
-    public String getT2BGradient() {
-        return T2B_GRADIENT;
+    public String getT2B() {
+        return T2B;
     }
 
-    public String getL2RGradient() {
-        return L2R_GRADIENT;
+    public String getL2R() {
+        return L2R;
     }
 
-    public String getBL2TRGradient() {
-        return BL2TR_GRADIENT;
+    public String getBL2TR() {
+        return BL2TR;
     }
 
-    public String getBR2TLGradient() {
-        return BR2TL_GRADIENT;
+    public String getBR2TL() {
+        return BR2TL;
     }
 
-    public String getWebkitPrefix() {
-        return WEBKIT_PREFIX;
+    public String getWebkitIdentifier() {
+        return WEBKIT_IDENTIFIER;
     }
 
-    public String getMozPrefix() {
-        return MOZ_PREFIX;
+    public String getMozIdentifier() {
+        return MOZ_IDENTIFIER;
     }
 
-    public String getOperaPrefix() {
-        return OPERA_PREFIX;
+    public String getOperaIdentifier() {
+        return OPERA_IDENTIFIER;
     }
 
     public Integer getDefaultRotation() {
@@ -72,8 +73,6 @@ public class Config {
     public String getDefaultVendors() {
         return DEFAULT_VENDORS;
     }
-
-    // Setters --
 
     // Process CLI args --
 
@@ -95,7 +94,7 @@ public class Config {
     }
 
     public String getGradientType() {
-        String gradientType = T2B_GRADIENT;
+        String gradientType = T2B;
 
         if (cliArgs.contains(GRADIENT_FLAG)) {
             gradientType = cliArgs.get(cliArgs.indexOf(GRADIENT_FLAG) + 1);

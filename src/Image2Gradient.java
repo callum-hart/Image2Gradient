@@ -12,10 +12,10 @@ public class Image2Gradient {
     private Config config = new Config();
 
     // Set finals --
-    private final String T2B_GRADIENT   = config.getT2BGradient();
-    private final String L2R_GRADIENT   = config.getL2RGradient();
-    private final String BL2TR_GRADIENT = config.getBL2TRGradient();
-    private final String BR2TL_GRADIENT = config.getBR2TLGradient();
+    private final String T2B                              = config.getT2B();
+    private final String L2R                              = config.getL2R();
+    private final String BL2TR                            = config.getBL2TR();
+    private final String BR2TL                            = config.getBR2TL();
 
     // Globals / options --
     private static String gradientType;
@@ -35,7 +35,7 @@ public class Image2Gradient {
             try {
                 BufferedImage image = ImageIO.read(imageFile);
                 averageColors = bandize(image);
-                CSSGradient cssGradient = new CSSGradient(gradientType, rawVendors, averageColors, getAverageColor());
+                CSSGradient cssGradient = new CSSGradient(gradientType, rawVendors, averageColors, getDominantColor());
                 cssGradient.print();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -48,14 +48,14 @@ public class Image2Gradient {
         int height = image.getHeight();
         int bands[][];
 
-        if (gradientType.equals(T2B_GRADIENT)) {
+        if (gradientType.equals(T2B)) {
             bands = horizontalBands(image, width, height);
-        } else if (gradientType.equals(L2R_GRADIENT)) {
+        } else if (gradientType.equals(L2R)) {
             bands = verticalBands(image, width, height);
-        } else if (gradientType.equals(BL2TR_GRADIENT)) {
+        } else if (gradientType.equals(BL2TR)) {
             BufferedImage rotatedImage = rotateImage(image, width, height);
             bands = verticalBands(rotatedImage, rotatedImage.getWidth(), rotatedImage.getHeight());
-        } else if (gradientType.equals(BR2TL_GRADIENT)) {
+        } else if (gradientType.equals(BR2TL)) {
             BufferedImage rotatedImage = rotateImage(image, width, height);
             bands = horizontalBands(rotatedImage, rotatedImage.getWidth(), rotatedImage.getHeight());
         } else {
@@ -66,8 +66,9 @@ public class Image2Gradient {
             averageColors.add(getAverageColorInBand(band));
         }
 
-        // reverse list as gradient starts from the bottom (which is end of the array). todo test this is correct / works.
-        if (gradientType.equals(config.getBR2TLGradient())) {
+        // When gradient starts from bottom right this equates to end of array (hence the reverse).
+        // Todo test this is correct / works.
+        if (gradientType.equals(BR2TL)) {
             Collections.reverse(averageColors);
         }
 
@@ -142,7 +143,7 @@ public class Image2Gradient {
     }
 
     // Todo this needs testing.
-    private Color getAverageColor() {
+    private Color getDominantColor() {
         int sumRed = 0, sumGreen = 0, sumBlue = 0;
 
         for (Color color: averageColors) {
@@ -162,8 +163,8 @@ public class Image2Gradient {
         // Args with arguments:
 
 //        -t: type of gradient (t2b / l2r / bl2tr / br2tl) {String} optional.
-//        -f: fidelity, number of bands {Integer} optional.
-//        -v: vendor prefixes for gradient ("web,moz,opera") {String} optional.
+//        -f: fidelity, number of bands {Integer} optional. (number of color stops in gradient)
+//        -v: vendor prefixes for gradient ("web,moz,opera") {String} optional. (IDENTIFIER)
 //        --help: print usage / help.
 //        last arg: path to image {String} required.
 
