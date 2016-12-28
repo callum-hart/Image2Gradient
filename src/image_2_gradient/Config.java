@@ -1,3 +1,5 @@
+package image_2_gradient;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class Config {
 
     Config() {}
 
-    Config(String[] args) {
+    public Config(String[] args) {
         cliArgs = Arrays.asList(args);
 
         if (cliArgs.contains(HELP_FLAG)) {
@@ -132,3 +134,4 @@ public class Config {
         System.out.println("Print help");
     }
 }
+

@@ -1,3 +1,5 @@
+package image_2_gradient;
+
 public class ParamValidator {
 
     // Set finals --
@@ -31,7 +33,7 @@ public class ParamValidator {
         boolean isValid = false;
 
         if (rawGradient.equals(config.getT2B()) || rawGradient.equals(config.getL2R()) ||
-            rawGradient.equals(config.getBL2TR()) || rawGradient.equals(config.getBR2TL())) {
+                rawGradient.equals(config.getBL2TR()) || rawGradient.equals(config.getBR2TL())) {
             isValid = true;
 
             pass("gradientType is valid");
@@ -61,7 +63,7 @@ public class ParamValidator {
 
         for (String vendor: vendors) {
             if (vendor.equals(config.getWebkitIdentifier()) || vendor.equals(config.getMozIdentifier()) ||
-                vendor.equals(config.getOperaIdentifier())) {
+                    vendor.equals(config.getOperaIdentifier())) {
                 isValid = true;
             } else {
                 fail("Unrecognized vendor: " + vendor);
@@ -86,3 +88,4 @@ public class ParamValidator {
         System.err.println(FAIL_COLOR + String.format("[%s] %s", FAIL_SYMBOl, message) + DEFAULT_COLOR);
     }
 }
+

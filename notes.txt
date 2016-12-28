@@ -25,19 +25,12 @@ Resize large images to make generating gradient quicker?
 
 Things todo for release:
 
-1. Gradient prefixes: `webkit-linear-gradient` not working for gradientType `l2r`
-    - Gradient prefix is different -webkit-linear-gradient(left, red, blue); "left" instead of "to right".
-    - Should check other vendor prefixes for different gradientTypes...
-2. Package (image2gradient package)
 3. Documentation
 
 Nice to have:
 
-- Copy gradient to clipboard (show message saying "copied to clipboard!")
-- Separate main method from Image2Gradient (rename to ImageProcessor)
-- Standard vendor prefix by default, * to select all
 - Add CLI options to `--help`
-- Optimise imports (i.e remove ones that aren't used, change this `import java.awt.*` to use specific modules)
+- Standard vendor prefix by default, * to select all
 
 Todos:
 

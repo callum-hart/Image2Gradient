@@ -1,7 +1,12 @@
-import javax.swing.text.html.CSS;
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+package image_2_gradient;
+
+import java.awt.Color;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CSSGradient {
     private Config config = new Config();
@@ -99,4 +104,12 @@ public class CSSGradient {
     public void print () {
         System.out.println(cssGradient);
     }
+
+    public void copyToClipboard() {
+        StringSelection selection = new StringSelection(cssGradient);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, selection);
+        System.out.println("Gradient copied to clipboard");
+    }
 }
+
