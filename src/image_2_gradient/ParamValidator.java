@@ -12,9 +12,9 @@ public class ParamValidator {
 
     private Config config = new Config();
 
-    ParamValidator() {}
+    protected ParamValidator() {}
 
-    public boolean check(String rawGradient, Integer rawFidelity, String rawVendors) {
+    protected boolean check(String rawGradient, Integer rawFidelity, String rawVendors) {
         boolean allValid          = false;
         boolean validGradientType = checkGadientType(rawGradient);
         boolean validFidelity     = checkFidelity(rawFidelity);

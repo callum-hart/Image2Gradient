@@ -56,7 +56,7 @@ public class CSSGradient {
 
     private String cssGradient                             = "";
 
-    CSSGradient(String gradientType, String vendors, ArrayList<Color> averageColors, Color dominantColor) {
+    protected CSSGradient(String gradientType, String vendors, ArrayList<Color> averageColors, Color dominantColor) {
         String fallback = addFallback(colorToCSSString(dominantColor));
         String function = GRADIENT_MODELS.get("standard").get("function").toString();
         String direction = gradientType.equals(T2B) ? "" : GRADIENT_MODELS.get("standard").get(gradientType).toString();
@@ -101,11 +101,11 @@ public class CSSGradient {
         return String.format("rgb(%s,%s,%s)", averageColor.getRed(), averageColor.getGreen(), averageColor.getBlue());
     }
 
-    public void print () {
+    protected void print () {
         System.out.println(cssGradient);
     }
 
-    public void copyToClipboard() {
+    protected void copyToClipboard() {
         StringSelection selection = new StringSelection(cssGradient);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, selection);
