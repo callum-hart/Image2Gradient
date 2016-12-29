@@ -46,10 +46,13 @@ Todos:
 
 Examples:
 
-- java Image2Gradient -f 300 ../../../images/sunset.jpg
+
 - java Image2Gradient -f 400 ../../../images/beach.jpg
-- java Image2Gradient -f 500 ../../../images/lake_sunset.jpg
 - java Image2Gradient -f 400 ../../../images/another_sunset.jpg
 - java Image2Gradient -f 400 -t l2r ../../../images/sand.jpg
+
+
+- java Image2Gradient -f 300 ../../../images/sunset.jpg
+- java Image2Gradient -f 500 ../../../images/lake_sunset.jpg
 - java Image2Gradient -f 500 -t l2r ../../../images/building.jpg
 - java Image2Gradient -f 400 -t l2r ../../../images/trees.jpg
