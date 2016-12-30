@@ -32,6 +32,13 @@ Nice to have:
 - Add CLI options to `--help`
 - Standard vendor prefix by default, * to select all
 
+Improvements / road map:
+
+- Detect optimal slice direction
+- Web interface
+- Velocity macro
+- Improve / battle-test diagonal gradients
+
 Todos:
 
 - Test ParamValidator without CLI to mock web interface (initializing Image2Gradient programmatically).
