@@ -92,7 +92,7 @@ Whilst waiting for an image to load show a placeholder gradient. This increases 
 
 This isn't new territory. 
 
-I first discovered this approach in Harry Robert's excellent blog post ["Improving Perceived Performance with Multiple Background Images"](http://csswizardry.com/2016/10/improving-perceived-performance-with-multiple-background-images/), and thought automating the process would be neat.
+I first discovered this approach in Harry Roberts excellent blog post ["Improving Perceived Performance with Multiple Background Images"](http://csswizardry.com/2016/10/improving-perceived-performance-with-multiple-background-images/), and thought automating the process would be neat.
 
 Since then others have also explored the topic, most notably:
 
