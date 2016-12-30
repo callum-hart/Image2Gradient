@@ -7,7 +7,7 @@ Replicating images with CSS gradients
 
 Image2Gradient analyses colors in an image, and generates a CSS gradient that mimics the image.
 
-Pictures *ahem* gradients speak a thousand words... so checkout the examples below :point_down: ... or read [how it works](#how-does-it-work?).
+Pictures *ahem* gradients speak a thousand words... so checkout the examples below :point_down: ... or read [how it works](#how-does-it-work).
 
 #### Examples
 
@@ -26,11 +26,11 @@ Beneath each example is the cmd used to generate the gradient. *Image on the lef
 
 The algorithm divides an image into slices. The slice direction (vertical/horizontal/diagonal) determines the direction of the gradient. For instance... 
 
-- vertical dissections generate a `top-top-bottom` linear gradient.
-- horizontal dissections generate a `left-to-right` linear gradient.
-- diagonal dissections come in 2 forms:
-	1. bottom left to top right generates a `to top right` linear gradient.
-	2. bottom right to top left generates a `to top left` linear gradient.
+- Vertical dissections generate a `top-top-bottom` linear gradient.
+- Horizontal dissections generate a `left-to-right` linear gradient.
+- Diagonal dissections come in 2 forms:
+	1. Bottom left to top right generates a `to top right` linear gradient.
+	2. Bottom right to top left generates a `to top left` linear gradient.
 
 After the dissection the average color in each slice is calculated and popped into a gradient. The number of slices correlates to [`color-stops`](https://developer.mozilla.org/en-US/docs/Web/CSS/linear-gradient#Values), and as we all know...
 
@@ -49,13 +49,15 @@ cd out/production/Image2Gradient
 
 And run :runner:
  
- `java Image2Gradient [-optional_args] <path-2-Image>`
+ `java Image2Gradient [-optional_args] <image_path>`
  
 #### CLI usage
 
 ###### Required args
 
-The last argument must be a path to an image. Supported image types are: **`PNG`**, **`JPG`**, **`JPEG`**, **`BMP`**, or **`WBMP`**.
+| Arg | Description | Value 
+| :---| :--- | :--- |
+| **`<image_path>`** | Path to an image | Supported image types: **`PNG`** **`JPG`** **`JPEG`** **`BMP`** **`WBMP`** |
  
 ###### Optional args
  
@@ -99,6 +101,6 @@ Since then others have also explored the topic, most notably:
 
 #### Stuff to keep the lawyers happy
 
-Licence: MIT
-Contributors: Very welcome!
+- Licence: MIT
+- Contributors: Very welcome!
  

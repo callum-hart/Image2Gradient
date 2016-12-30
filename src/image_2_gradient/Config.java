@@ -131,7 +131,19 @@ public class Config {
     }
 
     public void printHelp() {
-        System.out.println("Print help");
+        System.out.println("\nImage2Gradient: Replicate images with CSS gradients.");
+        System.out.println("\nUsage:");
+        System.out.println("    java Image2Gradient [-optional_args] <image_path>");
+        System.out.println("\nRequired args:");
+        System.out.println("    <image_path>    Path to an image. [accepts: PNG / JPG / JPEG / BMP / WBMP]");
+        System.out.println("\nOptional args:");
+        System.out.println("    -t              Type of linear gradient. [default: l2r] [accepts: l2r / t2b / bl2tr / br2tl]");
+        System.out.println("                                                                   l2r:   horizontal gradient (from: left to: right)");
+        System.out.println("                                                                   t2b:   vertical gradient   (from: top to: bottom)");
+        System.out.println("                                                                   bl2tr: diagonal gradient   (from: bottom left to: top right)");
+        System.out.println("                                                                   br2tl: diagonal gradient   (from: bottom right to: top left)");
+        System.out.println("    -f              Level of precision. [default: 10] [accepts: Integer >= 2]");
+        System.out.println("    -v              Vendor prefixes. [default: web,moz,opera] [accepts: web / moz / opera (or combination)]\n");
     }
 }
 
