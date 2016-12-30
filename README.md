@@ -11,7 +11,7 @@ Pictures *ahem* gradients speak a thousand words... so checkout the examples bel
 
 #### Examples
 
-Below each example is the cmd used to generate the gradient. *Image on the left, CSS gradient on the right :wink:* 
+Below each example is the cmd used to generate the gradient. *Image on the left, CSS gradient on the right* :wink: 
 
 ![building](sample_gradients/building.png)
 > `java Image2Gradient -f 500 -t l2r ../../../sample_images/building.jpg`
@@ -44,7 +44,7 @@ Download & navigate to class
 
 ```
 git clone git@github.com:callum-hart/Image2Gradient.git
-cd out/production/Image2Gradient
+cd Image2Gradient/out/production/Image2Gradient
 ```
 
 And run :runner:
