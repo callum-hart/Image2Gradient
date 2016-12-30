@@ -11,7 +11,7 @@ Pictures *ahem* gradients speak a thousand words... so checkout the examples bel
 
 #### Examples
 
-Beneath each example is the cmd used to generate the gradient. *Image on the left, CSS gradient on the right.* 
+Below each example is the cmd used to generate the gradient. *Image on the left, CSS gradient on the right :wink:* 
 
 ![building](sample_gradients/building.png)
 > `java Image2Gradient -f 500 -t l2r ../../../sample_images/building.jpg`
@@ -92,7 +92,7 @@ Whilst waiting for an image to load show a placeholder gradient. This increases 
 
 This isn't new territory. 
 
-I first discovered this approach in Harry Robert's excellent blog post ["Improving Perceived Performance with Multiple Background Images"](http://csswizardry.com/2016/10/improving-perceived-performance-with-multiple-background-images/).
+I first discovered this approach in Harry Robert's excellent blog post ["Improving Perceived Performance with Multiple Background Images"](http://csswizardry.com/2016/10/improving-perceived-performance-with-multiple-background-images/), and thought automating the process would be neat.
 
 Since then others have also explored the topic, most notably:
 
