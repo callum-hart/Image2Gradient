@@ -36,7 +36,7 @@ After the dissection the average color in each slice is calculated and popped in
 
 > Mo slices, Mo accurate gradients
 
-For good measure the dominant color of the image is added to a background color. This provides a fallback to browsers that don't support linear gradients.  [Read here](#supported-browsers) for browser support.
+For good measure the dominant color of the image is added to a background color. This provides a fallback to browsers that don't support linear gradients.  *[Read here](#supported-browsers) for browser support.*
 
 #### User guide 
 
@@ -102,5 +102,6 @@ Since then others have also explored the topic, most notably:
 #### Stuff to keep the lawyers happy
 
 - Licence: MIT
-- Contributors: Very welcome!
+- Sample images: From [unsplash.com](https://unsplash.com/)
+- Contributors: Very welcome! :raised_hands:
  
